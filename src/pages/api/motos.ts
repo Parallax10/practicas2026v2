@@ -1,12 +1,98 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+const hbsTemplate = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Motos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #111;
+            margin-bottom: 30px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .moto-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            padding: 15px;
+            text-align: center;
+        }
+        .moto-card:hover {
+            transform: translateY(-5px);
+        }
+        .moto-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .moto-title {
+            font-size: 1.2rem;
+            margin: 15px 0 10px;
+            color: #2c3e50;
+        }
+        .moto-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        .moto-details {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nuestro Catálogo</h1>
+    <div class="grid-container">
+        {{#each motos}}
+			<div class="moto-card clickable-card" data-url="{{this.url}}" style="cursor: pointer;">
+				<img class="moto-image" src="{{this.thumbnail}}" alt="{{this.title}}" />
+				<h2 class="moto-title">{{this.title}}</h2>
+				<div class="moto-price">{{this.price}} €</div>
+				<p class="moto-details"><strong>Motor:</strong> {{this.engine}} | <strong>Año:</strong> {{this.year}}</p>
+				<p class="moto-details"><strong>Carnet:</strong> {{this.license}} | <strong>Estado:</strong> {{this.type}}</p>
+			</div>
+		{{/each}}
+    </div>
+</body>
+</html>
+`;
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-	res.status(200).json(
-		motos.filter((moto) => {
-			if (req.query.url) return moto.url === req.query.url;
-			return true;
-		})
-	);
+    // Filtramos las motos según la query
+    const filteredMotos = motos.filter((moto) => {
+        if (req.query.url) return moto.url === req.query.url;
+        return true;
+    });
+
+    // Devolvemos un objeto con los datos y la plantilla
+    res.status(200).json({
+        data: filteredMotos,
+        template: hbsTemplate
+    });
 }
+
 
 const motos = [
 	{

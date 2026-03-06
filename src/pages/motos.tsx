@@ -1,35 +1,39 @@
 "use client";
-import { useEffect } from "react";
-import Link from "next/link";
-import { themeStyles as styles } from '../config/index';
+import { useRouter } from "next/router";
 import { fetchMotos } from "./store/slices/motoSlice";
 import { useAppSelector, useAppDispatch } from "./store/hooks";
+import Handlebars from "handlebars";
+import { useState,useEffect } from "react";
 
 export default function Motos(){
+    const route = useRouter();
+
+    const click=(evento)=>{
+        const motoClick=evento.target.closest(".clickable-card");
+        if(motoClick){
+            const url=motoClick.getAttribute("data-url");
+            if (url){
+                route.push(`/detallesMotos/${url}`);
+            }
+        }
+    }
     const dispatch = useAppDispatch();
     useEffect(()=>{
         dispatch(fetchMotos())
     },[])
-    const {items} = useAppSelector(state=>state.motos)
+    const {items,template} = useAppSelector(state=>state.motos)
+    const [htmlcontent,setHtmlContent]=useState<string>("");
+    useEffect(()=>{
+        if(template && items.length>0){
+            const compiledTemplate = Handlebars.compile(template);
+            const html = compiledTemplate({ motos: items });
+            setHtmlContent(html);
+        }
+    },[template,items])
+
     return(
-        <div className={styles.maps}>
-            {items.map(moto=>
-                <div key={moto.id} className={styles.item}>
-                        <ul className={styles.lista}>
-                            <li className={styles.imagen}>
-                                <Link href={`/detallesMotos/${moto.url}`}>
-                                    <img src={moto.thumbnail}></img>
-                                </Link>
-                            </li>
-                            <li className={styles.nombre}>
-                                <p>{moto.title}</p>
-                            </li>
-                            <li className={styles.precio}>
-                                <p>{moto.price}€</p>
-                            </li>
-                        </ul>
-                </div>
-            )}
+        <div>
+            <div  onClick={click} dangerouslySetInnerHTML={{ __html: htmlcontent }} />
         </div>
     )
 }

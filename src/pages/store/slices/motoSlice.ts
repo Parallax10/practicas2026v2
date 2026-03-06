@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
+import { act } from 'react';
 
 export const fetchMotos = createAsyncThunk(
     'motos/fetchAll',
@@ -14,12 +15,14 @@ interface MotoState {
     items: any[];
     status: 'idle' | 'loading' | 'failed';
     error: string | null;
+    template:string;
 }
 
 const initialState: MotoState = {
     items: [],
     status: 'idle',
     error: null,
+    template:""
 };
 
 export const motoSlice = createSlice({
@@ -33,7 +36,8 @@ export const motoSlice = createSlice({
         })
         .addCase(fetchMotos.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.items = action.payload;
+        state.items = action.payload.data;
+        state.template=action.payload.template;
         })
         .addCase(fetchMotos.rejected, (state, action) => {
         state.status = 'failed';
