@@ -27,6 +27,7 @@ const hbsTemplate = `
             margin: 0 auto;
         }
         .moto-card {
+			position:relative;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -60,6 +61,35 @@ const hbsTemplate = `
             color: #7f8c8d;
             margin: 5px 0;
         }
+		.mini-gallery{
+			display: none; /* Oculto */
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 10px;
+			box-sizing: border-box;
+			gap: 8px;
+			justify-content: center;
+			flex-wrap: wrap;
+			z-index: 10;
+		}
+		.moto-card:hover .mini-gallery{
+			display:flex;
+		}
+		.mini-thumb{
+			width:45px;
+			height:45px;
+			object-fit:cover;
+			border-radius: 2px solid transparent;
+			cursor:pointer;
+			transition:transform 0.2s, border-color 0.2s;
+		}
+		.mini-thumb:hover{
+			transfor:scale(1.1);
+			border-color: #e74c3c
+		}
     </style>
 </head>
 <body>
