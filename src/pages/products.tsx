@@ -1,13 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { themeStyles as styles } from '../config/index';
 import { useAppSelector, useAppDispatch } from "./store/hooks";
 import { fetchProductos } from "./store/slices/prodSlice";
 import { useRouter } from "next/navigation";
 import Handlebars from "handlebars";
 import { toggleFavorite } from "./store/slices/favsSlice";
-import Favoritos from "./favoritos";
+
 
 export default function Products(){
     const route=useRouter() 
@@ -50,7 +48,7 @@ export default function Products(){
 
     const {items,template}=useAppSelector(state=>state.products)
     const [htmlcontent,setHtmlContent]=useState<string>("")
-    const prodFavs=useAppSelector(state=>state.favorites.items)
+    const favoriteItems=useAppSelector(state=>state.favorites.items)
 
     useEffect(()=>{
         if(template && items.length>0){
@@ -58,7 +56,7 @@ export default function Products(){
             const marcasUnicas = Array.from(new Set(items.map(item => item.brand.name)));
             const plantillaCompilada=Handlebars.compile(template)
             const prodsConFavs=items.map((item)=>{
-                const esFavorito=prodFavs.some(fav=>fav.url===item.url)
+                const esFavorito=favoriteItems.some(fav=>fav.url===item.url)
                 return{...item,
                     isFavorite:esFavorito
                 }
@@ -71,7 +69,7 @@ export default function Products(){
             });
             setHtmlContent(html)
         }
-    },[template,items,prodFavs])
+    },[template,items,favoriteItems])
     return(
         <div>
             <div onClick={click} dangerouslySetInnerHTML={{__html:htmlcontent}}></div>

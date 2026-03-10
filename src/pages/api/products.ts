@@ -172,7 +172,11 @@ const hbsTemplateProductos = `
 					{{/each}}
 				</div>
 					<img class="prod-image" src="{{this.thumbnail}}" alt="{{this.title}}"/>
+					{{#if isFavorite}}
 					<p class="heart">❤️</p>
+					{{else}}
+					<p class="heart">🤍</p>
+					{{/if}}
 					<h2 class="prod-title">{{this.title}}</h2>
 					<p class="prod-price">{{this.price}}</p>
 					<p class="prod-details"><strong>Marca:</strong> {{this.brand.name}} | <strong>Categoria:</strong> {{this.categories.name}}</p>
