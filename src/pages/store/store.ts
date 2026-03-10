@@ -4,17 +4,19 @@ import storage from 'redux-persist/lib/storage';
 import userReducer from './slices/userSlice';
 import motoReducer from './slices/motoSlice';
 import productsReducer from './slices/prodSlice';
+import favReducer from './slices/favsSlice'; 
 
 const rootReducer = combineReducers({
     user: userReducer,
     motos: motoReducer,
     products: productsReducer,
+    favorites: favReducer, 
 });
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['user'], 
+    whitelist: ['user', 'favorites'], 
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
