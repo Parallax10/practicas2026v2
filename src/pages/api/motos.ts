@@ -76,30 +76,6 @@ const hbsTemplateMotos = `
 		.moto-card:hover .mini-gallery{
 			display:flex;
 		}
-		.heart {
-            display: none;
-            position: absolute;
-            top: 160px; 
-            font-size: 1.5rem;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 20; 
-            margin: 0;
-			border: 1px solid transparent;
-        }
-		.moto-card:hover .heart{
-			display:flex;
-			
-		}
-		.heart:hover {
-            border-color: black;
-            transform: scale(1.1);
-        }
 		.mini-thumb{
 			width:45px;
 			height:45px;
@@ -194,16 +170,12 @@ const hbsTemplateMotos = `
         <div class="grid-container">
             {{#each motos}}
                 <div class="moto-card clickable-card" data-url="{{this.url}}" style="cursor: pointer;">
-                    
                     <div class="mini-gallery">  
                         {{#each this.images}}
                             <img class="mini-thumb" src="{{this}}">
                         {{/each}}
                     </div>
-                    
                     <img class="moto-image" src="{{this.thumbnail}}" alt="{{this.title}}" />
-                    <p class="heart">❤️</p>
-                    
                     <h2 class="moto-title">{{this.title}}</h2>
                     <p class="moto-price">{{this.price}} €</p>
                     <p class="moto-details"><strong>Motor:</strong> {{this.engine}} | <strong>Año:</strong> {{this.year}}</p>

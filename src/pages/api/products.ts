@@ -166,11 +166,11 @@ const hbsTemplateProductos = `
 		<div class="grid-container">
 			{{#each products}}
 				<div class="prod-card clickable-card" data-url="{{this.url}}" style="cursor:pointer;">
-				<div class="mini-gallery">
-					{{#each this.images}}
-						<img  class="mini-thumb" src="{{this}}">
-					{{/each}}
-				</div>
+					<div class="mini-gallery">
+						{{#each this.images}}
+							<img  class="mini-thumb" src="{{this}}">
+						{{/each}}
+					</div>
 					<img class="prod-image" src="{{this.thumbnail}}" alt="{{this.title}}"/>
 					{{#if isFavorite}}
 					<p class="heart">❤️</p>

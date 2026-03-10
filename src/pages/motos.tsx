@@ -8,7 +8,18 @@ import { useState,useEffect } from "react";
 export default function Motos(){
     const route = useRouter();
     const click=(evento)=>{
+        const miniClick=evento.target.closest(".mini-thumb")
         const motoClick=evento.target.closest(".clickable-card");
+        if(miniClick){
+            evento.stopPropagation()
+            const miniImagen=miniClick.getAttribute("src")
+            const tarjeta=miniClick.closest(".moto-card")
+            if(miniImagen&&tarjeta){
+                const imagenGrande=tarjeta.querySelector(".moto-image")
+                imagenGrande.setAttribute("src",miniImagen)
+                return
+            }
+        }
         if(motoClick){
             const url=motoClick.getAttribute("data-url");
             if (url){

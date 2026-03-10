@@ -47,7 +47,7 @@ export default function Products(){
     },[])
 
     const {items,template}=useAppSelector(state=>state.products)
-    const [htmlcontent,setHtmlContent]=useState<string>("")
+    const [htmlcontent,setHtmlContent]=useState("")
     const favoriteItems=useAppSelector(state=>state.favorites.items)
 
     useEffect(()=>{
