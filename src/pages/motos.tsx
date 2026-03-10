@@ -4,10 +4,10 @@ import { fetchMotos } from "./store/slices/motoSlice";
 import { useAppSelector, useAppDispatch } from "./store/hooks";
 import Handlebars from "handlebars";
 import { useState,useEffect } from "react";
+import { useParams } from "next/navigation";
 
 export default function Motos(){
     const route = useRouter();
-
     const click=(evento)=>{
         const motoClick=evento.target.closest(".clickable-card");
         if(motoClick){
