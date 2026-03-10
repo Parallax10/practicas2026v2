@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-const hbsTemplate = `
+const hbsTemplateMotos = `
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,8 +10,6 @@ const hbsTemplate = `
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f3f4f6;
-            margin: 0;
-            padding: 20px;
             color: #333;
         }
         h1 {
@@ -78,6 +76,30 @@ const hbsTemplate = `
 		.moto-card:hover .mini-gallery{
 			display:flex;
 		}
+		.heart {
+            display: none;
+            position: absolute;
+            top: 160px; 
+            font-size: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 20; 
+            margin: 0;
+			border: 1px solid transparent;
+        }
+		.moto-card:hover .heart{
+			display:flex;
+			
+		}
+		.heart:hover {
+            border-color: black;
+            transform: scale(1.1);
+        }
 		.mini-thumb{
 			width:45px;
 			height:45px;
@@ -85,41 +107,125 @@ const hbsTemplate = `
 			border-radius: 2px solid transparent;
 			cursor:pointer;
 			transition:transform 0.2s, border-color 0.2s;
+			border-color: #e74c3c;
 		}
 		.mini-thumb:hover{
-			transfor:scale(1.1);
-			border-color: #e74c3c
+			transform:scale(1.1);
+			border-color: #e74c3c;
+			
 		}
+		.filtro{
+			margin: 20px;
+            padding: 20px;
+			width: max-content; 
+            height: fit-content;
+			border: 1px solid red;
+			position: relative;
+			gap:15px;
+		}
+		.filtro-opcion {
+			display: flex;        
+			align-items: center; 
+			gap: 10px;            
+			margin-bottom: 12px; 
+			cursor: pointer;      
+			font-size: 1rem;
+			color: #2c3e50;
+			gap:15px;
+		}
+		.main-wrapper {
+			display: flex;
+			gap: 30px; 
+			margin: 0 auto;
+			align-items: flex-start; 
+			padding: 0 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Nuestro Catálogo</h1>
-    <div class="grid-container">
-        {{#each motos}}
-			<div class="moto-card clickable-card" data-url="{{this.url}}" style="cursor: pointer;">
-				<img class="moto-image" src="{{this.thumbnail}}" alt="{{this.title}}" />
-				<h2 class="moto-title">{{this.title}}</h2>
-				<div class="moto-price">{{this.price}} €</div>
-				<p class="moto-details"><strong>Motor:</strong> {{this.engine}} | <strong>Año:</strong> {{this.year}}</p>
-				<p class="moto-details"><strong>Carnet:</strong> {{this.license}} | <strong>Estado:</strong> {{this.type}}</p>
-			</div>
-		{{/each}}
+
+    <div class="main-wrapper">
+        
+        <div class="filtro">
+            <h2>Filtros</h2>
+            
+            <h3>Tipo</h3>
+            {{#each estado}}
+                <label class="filtro-opcion">
+                    <input type="checkbox"/>
+                    <span>{{this}}</span>
+                </label>
+            {{/each}}
+            
+            <h3>Motor</h3>
+            {{#each motor}}
+                <label class="filtro-opcion">
+                    <input type="checkbox"/>
+                    <span>{{this}}</span>
+                </label>
+            {{/each}}
+
+			<h3>Año</h3>
+            {{#each año}}
+                <label class="filtro-opcion">
+                    <input type="checkbox"/>
+                    <span>{{this}}</span>
+                </label>
+            {{/each}}
+
+			<h3>Licencia</h3>
+            {{#each carnet}}
+                <label class="filtro-opcion">
+                    <input type="checkbox"/>
+                    <span>{{this}}</span>
+                </label>
+            {{/each}}
+
+			<h3>Motor</h3>
+            {{#each motor}}
+                <label class="filtro-opcion">
+                    <input type="checkbox"/>
+                    <span>{{this}}</span>
+                </label>
+            {{/each}}
+        </div>
+
+        <div class="grid-container">
+            {{#each motos}}
+                <div class="moto-card clickable-card" data-url="{{this.url}}" style="cursor: pointer;">
+                    
+                    <div class="mini-gallery">  
+                        {{#each this.images}}
+                            <img class="mini-thumb" src="{{this}}">
+                        {{/each}}
+                    </div>
+                    
+                    <img class="moto-image" src="{{this.thumbnail}}" alt="{{this.title}}" />
+                    <p class="heart">❤️</p>
+                    
+                    <h2 class="moto-title">{{this.title}}</h2>
+                    <p class="moto-price">{{this.price}} €</p>
+                    <p class="moto-details"><strong>Motor:</strong> {{this.engine}} | <strong>Año:</strong> {{this.year}}</p>
+                    <p class="moto-details"><strong>Carnet:</strong> {{this.license}} | <strong>Estado:</strong> {{this.type}}</p>
+                </div>
+            {{/each}}
+        </div>
+        
     </div>
 </body>
 </html>
 `;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    // Filtramos las motos según la query
     const filteredMotos = motos.filter((moto) => {
         if (req.query.url) return moto.url === req.query.url;
         return true;
     });
 
-    // Devolvemos un objeto con los datos y la plantilla
     res.status(200).json({
         data: filteredMotos,
-        template: hbsTemplate
+        template: hbsTemplateMotos
     });
 }
 

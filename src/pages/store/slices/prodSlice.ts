@@ -14,12 +14,14 @@ interface ProductoState {
     items: any[];
     status: 'idle' | 'loading' | 'failed';
     error: string | null;
+    template:string;
 }
 
 const initialState: ProductoState = {
     items: [],
     status: 'idle',
     error: null,
+    template:""
 };
 
 export const productoSlice = createSlice({
@@ -33,7 +35,8 @@ export const productoSlice = createSlice({
         })
         .addCase(fetchProductos.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.items = action.payload; 
+        state.items = action.payload.data; 
+        state.template=action.payload.template
         })
         .addCase(fetchProductos.rejected, (state, action) => {
         state.status = 'failed';

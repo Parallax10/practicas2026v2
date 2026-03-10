@@ -1,12 +1,200 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+const hbsTemplateProductos = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Motos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #111;
+            margin-bottom: 30px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .prod-card {
+			position:relative;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            padding: 15px;
+            text-align: center;
+        }
+        .prod-card:hover {
+            transform: translateY(-5px);
+        }
+        .prod-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .prod-title {
+            font-size: 1.2rem;
+            margin: 15px 0 10px;
+            color: #2c3e50;
+        }
+        .prod-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        .prod-details {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+		.mini-gallery{
+			display: none; /* Oculto */
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 10px;
+			box-sizing: border-box;
+			gap: 8px;
+			justify-content: center;
+			flex-wrap: wrap;
+			z-index: 10;
+		}
+		.prod-card:hover .mini-gallery{
+			display:flex;
+		}
+		.heart {
+            display: none;
+            position: absolute;
+            top: 160px; 
+            font-size: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 20; 
+            margin: 0;
+			border: 1px solid transparent;
+        }
+		.prod-card:hover .heart{
+			display:flex;
+			
+		}
+		.heart:hover {
+            border-color: black;
+            transform: scale(1.1);
+        }
+		.mini-thumb{
+			width:45px;
+			height:45px;
+			object-fit:cover;
+			border-radius: 2px solid transparent;
+			cursor:pointer;
+			transition:transform 0.2s, border-color 0.2s;
+			border-color: #e74c3c;
+		}
+		.mini-thumb:hover{
+			transform:scale(1.1);
+			border-color: #e74c3c;
+			
+		}
+		.filtro{
+			margin: 20px;
+            padding: 20px;
+			width: max-content; 
+            height: fit-content;
+			border: 1px solid red;
+			position: relative;
+			gap:15px;
+		}
+		.filtro-opcion {
+			display: flex;        
+			align-items: center; 
+			gap: 10px;            
+			margin-bottom: 12px; 
+			cursor: pointer;      
+			font-size: 1rem;
+			color: #2c3e50;
+			gap:15px;
+		}
+		.main-wrapper {
+			display: flex;
+			gap: 30px; 
+			margin: 0 auto;
+			align-items: flex-start; 
+			padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Nuestro Catálogo</h1>
+	<div class="main-wrapper">
+		
+		<div class="filtro">
+			<h2>Filtros</h2>
+			<h3>Categorias</h3>
+			{{#each filtrosCategorias}}
+				<label class="filtro-opcion">
+				<input type="checkbox"/>
+				<span>{{this}}</span>
+				</label>
+			{{/each}}
+			<h3>Marcas</h3>
+			{{#each filtroMarcas}}
+				<label class="filtro-opcion">
+				<input type="checkbox"/>
+				<span>{{this}}</span>
+				</label>
+			{{/each}}
+		</div>
+		<div class="grid-container">
+			{{#each products}}
+				<div class="prod-card clickable-card" data-url="{{this.url}}" style="cursor:pointer;">
+				<div class="mini-gallery">
+					{{#each this.images}}
+						<img  class="mini-thumb" src="{{this}}">
+					{{/each}}
+				</div>
+					<img class="prod-image" src="{{this.thumbnail}}" alt="{{this.title}}"/>
+					<p class="heart">❤️</p>
+					<h2 class="prod-title">{{this.title}}</h2>
+					<p class="prod-price">{{this.price}}</p>
+					<p class="prod-details"><strong>Marca:</strong> {{this.brand.name}} | <strong>Categoria:</strong> {{this.categories.name}}</p>
+				</div>
+			{{/each}}
+		</div>
+	</div>
+</body>
+</html>
+`;
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-	res.status(200).json(
-		products.filter((product) => {
-			if (req.query.url) return product.url === req.query.url;
-			return true;
-		})
-	);
+	const filteredProducts=products.filter((product) => {
+		if (req.query.url) return product.url === req.query.url;
+		return true
+	});
+	res.status(200).json({
+		data:filteredProducts,
+		template:hbsTemplateProductos
+	});
 }
+
 
 const products = [
 	{

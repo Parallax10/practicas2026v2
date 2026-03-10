@@ -4,7 +4,6 @@ import { fetchMotos } from "./store/slices/motoSlice";
 import { useAppSelector, useAppDispatch } from "./store/hooks";
 import Handlebars from "handlebars";
 import { useState,useEffect } from "react";
-import { useParams } from "next/navigation";
 
 export default function Motos(){
     const route = useRouter();
@@ -21,12 +20,24 @@ export default function Motos(){
     useEffect(()=>{
         dispatch(fetchMotos())
     },[])
+
     const {items,template} = useAppSelector(state=>state.motos)
     const [htmlcontent,setHtmlContent]=useState<string>("");
+
     useEffect(()=>{
         if(template && items.length>0){
-            const compiledTemplate = Handlebars.compile(template);
-            const html = compiledTemplate({ motos: items });
+            const motor = Array.from(new Set(items.map(item => item.engine)));
+            const año = Array.from(new Set(items.map(item => item.year)));
+            const carnet = Array.from(new Set(items.map(item => item.license)));
+            const estado = Array.from(new Set(items.map(item => item.type)));
+            const plantillaCompilada = Handlebars.compile(template);
+            const html = plantillaCompilada({
+                motos: items ,
+                motor:motor,
+                año:año,
+                carnet:carnet,
+                estado:estado
+            });
             setHtmlContent(html);
         }
     },[template,items])
